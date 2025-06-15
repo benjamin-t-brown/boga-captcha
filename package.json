@@ -1,0 +1,25 @@
+{
+  "name": "codejam25-boga-captcha-pachinko",
+  "version": "1.0.0",
+  "license": "MIT",
+  "scripts": {
+    "start": "vite serve src --config ./vite.config.ts",
+    "dist": "http-server --port=9843 dist",
+    "build": "rm -rf captcha/*.js && npm run tscompile && tsx build.js",
+    "tscompile": "tsc -p ./tsconfig.json"
+  },
+  "devDependencies": {
+    "@swc/core": "^1.7.14",
+    "@types/node": "20.0.0",
+    "@typescript-eslint/eslint-plugin": "^6.4.0",
+    "@typescript-eslint/parser": "^6.4.0",
+    "eslint": "^8.21.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-prettier": "^5.0.0",
+    "http-server": "^14.1.1",
+    "tsx": "^4.18.0",
+    "typescript": "^4.5.5",
+    "vite": "^5.4.1",
+    "vite-tsconfig-paths": "^4.2.0"
+  }
+}
