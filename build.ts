@@ -16,7 +16,7 @@ const execAsync = async (command: string) => {
 };
 
 function getAllFilePaths(dirPath: string, arrayOfFiles?: string[]) {
-  let files = fs.readdirSync(dirPath);
+  const files = fs.readdirSync(dirPath);
 
   const arr = arrayOfFiles || [];
 
@@ -44,11 +44,6 @@ function processCodeFile(text) {
 }
 
 async function build() {
-  let htmlFile = fs
-    .readFileSync(`${__dirname}/src/index.html`)
-    .toString()
-    .replace('index.ts', 'src/index.js');
-
   console.log('Concat code...');
   const filePaths = getAllFilePaths(path.resolve(__dirname + '/src'));
   console.log('files to concat:\n', filePaths.join('\n '));
@@ -61,6 +56,8 @@ async function build() {
   fs.writeFileSync(`${__dirname}/captcha/index.js`, indexFile);
   await execAsync(`rm -rf src/*.js`);
   console.log('Created captcha/index.js');
+
+  await execAsync(`npx prettier --write captcha/index.js`);
 }
 
 build();

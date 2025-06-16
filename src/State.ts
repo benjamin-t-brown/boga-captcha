@@ -243,6 +243,7 @@ export class State {
   reserveBalls: PachinkoBall[] = [];
   numReserveBalls: number = 20;
   score: number = 0;
+  showConfetti: boolean = false;
 
   uiShootArrow0: Animation;
   uiShootArrow1: Animation;

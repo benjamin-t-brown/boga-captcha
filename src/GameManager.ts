@@ -30,6 +30,7 @@ import {
 } from './Db';
 import { timerIsComplete, timerStart, timerUpdate } from './Timer';
 import { createAnimation } from './Animation';
+import { drawConfetti, initConfetti } from './Confetti';
 
 const calcDist = (x1: number, y1: number, x2: number, y2: number) => {
   return Math.sqrt(Math.pow(x1 - x2, 2) + Math.pow(y1 - y2, 2));
@@ -45,13 +46,18 @@ export class GameManager {
 
   constructor() {
     const canvas = createCanvas(this.renderWidth, this.renderHeight);
-    document.body.appendChild(canvas);
+    // document.body.appendChild(canvas);
+    const div = document.getElementById('game-canvas');
+    if (div) {
+      div.appendChild(canvas);
+    }
     this.r = new Renderer(canvas);
     this.tinyPhysics = new TinyPhysics(
       this.r.context,
       canvas.width,
       canvas.height
     );
+    initConfetti(canvas, 100);
   }
 
   async load() {
@@ -374,6 +380,10 @@ export class GameManager {
     if (this.state.uiShootArrow0) {
       this.r.drawAnimation(this.state.uiShootArrow0, 1, 150, 60);
       this.r.drawAnimation(this.state.uiShootArrow1, 50, 150, 180 - 60);
+    }
+
+    if (this.state.showConfetti) {
+      drawConfetti(this.r.context, this.r.canvas);
     }
   }
 }

@@ -39,8 +39,6 @@ const handleShootClick = (game: GameManager) => {
     )
   );
 
-  console.log('ind', ind);
-
   const [minVal, maxVal] = buckets[ind];
   const randomForce =
     Math.floor(Math.random() * (maxVal - minVal + 1)) + minVal;

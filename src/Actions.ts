@@ -341,6 +341,7 @@ export class DoGameComplete extends StateAction {
     const globalWindow = window as any;
     if (Math.floor(state.score) > 10000) {
       globalWindow.showSuccessMessage(Math.floor(state.score));
+      state.showConfetti = true;
     } else {
       globalWindow.showFailMessage(Math.floor(state.score));
     }
