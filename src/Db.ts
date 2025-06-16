@@ -13,6 +13,22 @@ import {
 } from './State';
 import { Animation, createAnimationBuilder } from './Animation';
 
+export const getPrimaryFlowerRoof = (state: State) => {
+  return state.flowerRoofs[3];
+}
+
+export const getSecondaryFlowerRoofs = (state: State) => {
+  return state.flowerRoofs.slice(1, 4);
+}
+
+export const getPrimaryFlashingArrows = (state: State) => {
+  return state.flashingArrows.slice(6)
+}
+
+export const getSecondaryFlashingArrowsForInd = (state: State, ind: number) => {
+  return state.flashingArrows.slice(ind * 2, ind * 2 + 2);
+}
+
 export const loadImagesAndSprites = async (r: Renderer) => {
   const imagePaths = [
     'res/pin.png',
@@ -210,12 +226,12 @@ export const createMachineIntoState = (
   }
 
   // VERY LAZY HACK: manually putting the ui stuff here
-  state.flashingArrows.push(new FlashingArrow(0, 320, 210, -45));
-  state.flashingArrows.push(new FlashingArrow(0, 320 - 30, 210, 180 + 45));
   state.flashingArrows.push(new FlashingArrow(0, 223, 210, -45));
   state.flashingArrows.push(new FlashingArrow(0, 223 - 30, 210, 180 + 45));
-  state.flashingArrows.push(new FlashingArrow(0, 272, 180, -45));
-  state.flashingArrows.push(new FlashingArrow(0, 272 - 27, 180, 180 + 45));
+  state.flashingArrows.push(new FlashingArrow(0, 272, 180, -60));
+  state.flashingArrows.push(new FlashingArrow(0, 272 - 27, 180, 180 + 60));
+  state.flashingArrows.push(new FlashingArrow(0, 320, 210, -45));
+  state.flashingArrows.push(new FlashingArrow(0, 320 - 30, 210, 180 + 45));
 
   state.flashingArrows.push(new FlashingArrow(0, 276, 100, -45));
   state.flashingArrows.push(new FlashingArrow(1, 276 + 9, 100 - 11, -45));
@@ -237,7 +253,7 @@ export const createMachineIntoState = (
     new FlashingArrow(3, 276 - 37 - 9 * 3, 100 - 11 * 3, 180 + 45)
   );
 
-  const primaryFlashingArrows = state.flashingArrows.slice(6);
+  const primaryFlashingArrows = getPrimaryFlashingArrows(state);
   for (const arrow of primaryFlashingArrows) {
     arrow.isFlashing = false;
   }

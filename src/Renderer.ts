@@ -73,7 +73,7 @@ export class Renderer {
   canvas: HTMLCanvasElement;
   context: CanvasRenderingContext2D;
   sprites: Record<string, Sprite> = {};
-  debug = false;
+  debug = true;
   mouseX: number = 0;
   mouseY: number = 0;
 

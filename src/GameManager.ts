@@ -12,9 +12,12 @@ import { createCanvas, Renderer, loadImageAsSprite } from './Renderer';
 import { Machine0 } from './Machines';
 import {
   createMachineIntoState,
+  getPrimaryFlashingArrows,
+  getPrimaryFlowerRoof,
+  getSecondaryFlashingArrowsForInd,
   loadAnimations,
   loadImagesAndSprites,
-} from './db';
+} from './Db';
 import { timerIsComplete, timerStart, timerUpdate } from './Timer';
 
 const calcDist = (x1: number, y1: number, x2: number, y2: number) => {
@@ -46,9 +49,9 @@ export class GameManager {
 
   start() {
     this.state.pachinkoBalls = [
-      new PachinkoBall(10, 10, this.tinyPhysics),
+      new PachinkoBall(265, 212, this.tinyPhysics),
       new PachinkoBall(215, 235, this.tinyPhysics),
-      // new PachinkoBall(200, 200, 4, this.tinyPhysics),
+      new PachinkoBall(312, 151, this.tinyPhysics),
     ];
 
     createMachineIntoState(Machine0, this.state, this.tinyPhysics);
@@ -138,7 +141,28 @@ export class GameManager {
           }
           if (!flowerSensor.flowerRoof.active) {
             flowerSensor.flowerRoof.activate(this.state, this.tinyPhysics);
+            const flowerInd = this.state.flowerSensors.indexOf(flowerSensor);
+            const arrows = getSecondaryFlashingArrowsForInd(this.state, flowerInd - 1);
+            for (const arrow of arrows) {
+              arrow.isFlashing = false;
+            }
+            console.log('actiate flower', flowerInd);
+
+            const shouldOpenPrimary = this.state.flowerRoofs.reduce((prev, curr) => {
+              return prev && curr.active;
+            }, true);
+            if (shouldOpenPrimary) {
+              const primaryRoof = getPrimaryFlowerRoof(this.state);
+              primaryRoof.deactivate(this.state, this.tinyPhysics);
+              const primaryArrows = getPrimaryFlashingArrows(this.state);
+              for (const arrow of primaryArrows) {
+                arrow.isFlashing = true;
+              }
+            }
+          } else if (flowerSensor.flowerRoof.active) {
+            flowerSensor.flowerRoof.deactivate(this.state, this.tinyPhysics);
           }
+
           flowerSensor.isContacting = false;
           flowerSensor.ball = undefined;
         }
