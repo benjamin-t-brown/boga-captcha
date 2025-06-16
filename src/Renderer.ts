@@ -7,6 +7,7 @@ import {
   Spinner,
   FlowerRoof,
   FlowerSensor,
+  AnimatedParticle,
 } from './State';
 
 export interface Sprite {
@@ -73,7 +74,7 @@ export class Renderer {
   canvas: HTMLCanvasElement;
   context: CanvasRenderingContext2D;
   sprites: Record<string, Sprite> = {};
-  debug = true;
+  debug = false;
   mouseX: number = 0;
   mouseY: number = 0;
 
@@ -130,6 +131,12 @@ export class Renderer {
   drawText(text: string, x: number, y: number, color: string) {
     this.context.fillStyle = color;
     this.context.font = '16px Arial';
+    this.context.fillText(text, x, y);
+  }
+
+  drawTextEx(text: string, x: number, y: number, color: string, font: string) {
+    this.context.fillStyle = color;
+    this.context.font = font;
     this.context.fillText(text, x, y);
   }
 
@@ -190,7 +197,7 @@ export class Renderer {
   drawMouseCoordinates() {
     const x = Math.round(this.mouseX);
     const y = Math.round(this.mouseY);
-    this.drawText(`(${x}, ${y})`, 10, 20, 'white');
+    this.drawText(`(${x}, ${y})`, 10, 100, 'white');
   }
 
   drawPachinkoBall(ball: PachinkoBall) {
@@ -242,5 +249,9 @@ export class Renderer {
         flowerRoof.y - 15
       );
     }
+  }
+
+  drawAnimatedParticle(particle: AnimatedParticle) {
+    this.drawAnimation(particle.anim, particle.x, particle.y);
   }
 }

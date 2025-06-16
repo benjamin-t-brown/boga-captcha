@@ -4,6 +4,10 @@
   </head>
   <body>
     <style>
+      @font-face {
+        font-family: 'Digital7';
+        src: url('res/digital7.ttf') format('truetype');
+      }
       body {
         background: #333;
         margin: 0;
@@ -17,11 +21,79 @@
       }
       canvas {
         image-rendering: pixelated;
-        width: calc(390px * 2);
-        height: calc(300px * 2);
+        width: calc(390px);
+        height: calc(300px);
+      }
+      .info-div {
+        font-family: Arial, Helvetica, sans-serif;
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: calc(100px - 4px);
+        transform-origin: top left;
+        font-size: 16px;
+        padding: 8px 2px;
+        background: white;
+        color: black;
+      }
+      .conclusion-div {
+        font-family: Arial, Helvetica, sans-serif;
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 390px;
+        height: 300px;
+        background: rgba(0, 0, 0, 0.65);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
       }
     </style>
-    <div id="cdv"></div>
+    <div class="info-div">Generate a human score with this machine.</div>
+    <div class="conclusion-div" id="conclusion-div" style="display: none">
+      <div>Your human score is: <span id="human-score">0</span></div>
+      <div id="conclusion-text-fail">
+        Sadly, this score is not sufficiently human.
+      </div>
+      <div id="conclusion-text-success">
+        Wow! You generated a perfectly-human score!
+      </div>
+      <div id="conclusion-buttons-fail">
+        <button onclick="location.reload()">Try again</button>
+      </div>
+      <div id="conclusion-buttons-success">
+        <button onclick="location.reload()">Go again</button>
+        <button onclick="captchaSuccess()">Continue</button>
+      </div>
+    </div>
     <script src="index.ts" type="module"></script>
+    <script>
+      window.captchaSuccess = function () {
+        window.top.postMessage('success', '*');
+      };
+      window.showFailMessage = function (score) {
+        document.getElementById('human-score').textContent = score;
+        document.getElementById('conclusion-div').style.display = 'flex';
+        document.getElementById('conclusion-text-fail').style.display = 'block';
+        document.getElementById('conclusion-buttons-fail').style.display =
+          'block';
+        document.getElementById('conclusion-text-success').style.display =
+          'none';
+        document.getElementById('conclusion-buttons-success').style.display =
+          'none';
+      };
+      window.showSuccessMessage = function (score) {
+        document.getElementById('human-score').textContent = score;
+        document.getElementById('conclusion-div').style.display = 'flex';
+        document.getElementById('conclusion-text-success').style.display =
+          'block';
+        document.getElementById('conclusion-buttons-success').style.display =
+          'block';
+        document.getElementById('conclusion-text-fail').style.display = 'none';
+        document.getElementById('conclusion-buttons-fail').style.display =
+          'none';
+      };
+    </script>
   </body>
 </html>

@@ -12,22 +12,23 @@ import {
   State,
 } from './State';
 import { Animation, createAnimationBuilder } from './Animation';
+import { PushIconStack } from './Actions';
 
 export const getPrimaryFlowerRoof = (state: State) => {
-  return state.flowerRoofs[3];
-}
+  return state.flowerRoofs[0];
+};
 
 export const getSecondaryFlowerRoofs = (state: State) => {
-  return state.flowerRoofs.slice(1, 4);
-}
+  return state.flowerRoofs.slice(1);
+};
 
 export const getPrimaryFlashingArrows = (state: State) => {
-  return state.flashingArrows.slice(6)
-}
+  return state.flashingArrows.slice(6);
+};
 
 export const getSecondaryFlashingArrowsForInd = (state: State, ind: number) => {
   return state.flashingArrows.slice(ind * 2, ind * 2 + 2);
-}
+};
 
 export const loadImagesAndSprites = async (r: Renderer) => {
   const imagePaths = [
@@ -36,7 +37,19 @@ export const loadImagesAndSprites = async (r: Renderer) => {
     'res/machine0Fg.png',
     'res/machine0Flowers.png',
     'res/spinner.png',
+    'res/ball.png',
+    'res/handle.png',
+    'res/button.png',
+    'res/buttonPressed.png',
+    'res/interlace.png',
+    'res/icon_start0.png',
+    'res/icon_loading.png',
   ];
+  for (let i = 0; i < PushIconStack.NUM_ICONS; i++) {
+    imagePaths.push(`res/icon_fail${i}.png`);
+    imagePaths.push(`res/icon_good${i}.png`);
+  }
+
   const imageNames = imagePaths.map(path =>
     path.replace('res/', '').replace('.png', '')
   );
@@ -73,9 +86,37 @@ export const loadImagesAndSprites = async (r: Renderer) => {
   flowerRoofSprites.forEach((sprite, index) => {
     r.sprites[`flowerRoof_${index}`] = sprite;
   });
+
+  const ballGetSprites = await loadImageAsSprites('res/ballGet.png', 9, 6);
+  ballGetSprites.forEach((sprite, index) => {
+    r.sprites[`ballGet_${index}`] = sprite;
+  });
+
+  const shootArrowSprites = await loadImageAsSprites(
+    'res/shootArrow.png',
+    50,
+    44
+  );
+  shootArrowSprites.forEach((sprite, index) => {
+    r.sprites[`shootArrow_${index}`] = sprite;
+  });
 };
 
 export const loadAnimations = async () => {
+  createAnimationBuilder('shootArrow', () => {
+    const anim = new Animation(true);
+    anim.loop = true;
+    anim.addSprite({ name: 'shootArrow_0', duration: 700 });
+    anim.addSprite({ name: 'shootArrow_1', duration: 700 });
+    return anim;
+  });
+  createAnimationBuilder('shootArrow2', () => {
+    const anim = new Animation(true);
+    anim.loop = true;
+    anim.addSprite({ name: 'shootArrow_1', duration: 700 });
+    anim.addSprite({ name: 'shootArrow_0', duration: 700 });
+    return anim;
+  });
   createAnimationBuilder('flowerRoofOpen', () => {
     const anim = new Animation(true);
     anim.loop = false;
@@ -142,6 +183,17 @@ export const loadAnimations = async () => {
     anim.addSprite({ name: 'dullArrow_2', duration: 100 });
     anim.addSprite({ name: 'dullArrow_1', duration: 100 });
     anim.addSprite({ name: 'dullArrow_0', duration: 100 });
+    return anim;
+  });
+
+  createAnimationBuilder('ballGet', () => {
+    const anim = new Animation(true);
+    anim.loop = false;
+    anim.addSprite({ name: 'ballGet_0', duration: 100 });
+    anim.addSprite({ name: 'ballGet_1', duration: 100 });
+    anim.addSprite({ name: 'ballGet_2', duration: 100 });
+    anim.addSprite({ name: 'ballGet_3', duration: 100 });
+    anim.addSprite({ name: 'ballGet_4', duration: 100 });
     return anim;
   });
 };

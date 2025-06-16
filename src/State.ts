@@ -167,12 +167,14 @@ export class Spinner {
   arm: ArmSegment;
   rotationVx: number;
   spinDirection: number;
+  startingAngle: number;
 
   constructor(x: number, y: number, arm: ArmSegment) {
     this.x = x;
     this.y = y;
     this.arm = arm;
     this.angle = 0;
+    this.startingAngle = 0;
     this.rotationVx = 0;
     this.spinDirection = 1;
   }
@@ -196,6 +198,19 @@ export class FlowerSensor {
   }
 }
 
+export class AnimatedParticle {
+  x: number;
+  y: number;
+  anim: Animation;
+  timer: Timer;
+  constructor(x: number, y: number, animName: string, durationMs: number) {
+    this.x = x;
+    this.y = y;
+    this.anim = createAnimation(animName);
+    this.timer = createTimer(durationMs);
+  }
+}
+
 export class AutomatedAction {
   timer: Timer;
   action: StateAction | undefined;
@@ -214,6 +229,8 @@ export class AutomatedAction {
 }
 
 export class State {
+  actions: AutomatedAction[] = [];
+  parallelActions: AutomatedAction[] = [];
   pachinkoBalls: PachinkoBall[] = [];
   edges: Edge[] = [];
   pins: Pin[] = [];
@@ -222,7 +239,30 @@ export class State {
   flowerSensors: FlowerSensor[] = [];
   flashingArrows: FlashingArrow[] = [];
   spinners: Spinner[] = [];
-  actions: AutomatedAction[] = [];
+  animatedParticles: AnimatedParticle[] = [];
+  reserveBalls: PachinkoBall[] = [];
+  numReserveBalls: number = 20;
+  score: number = 0;
+
+  uiShootArrow0: Animation;
+  uiShootArrow1: Animation;
+
+  shootPressed: boolean = false;
+  iconStack: string[] = [];
+  iconTimer: Timer = createTimer(2000);
+  icon: string = 'icon_start0';
+
+  handle: {
+    x: number;
+    y: number;
+    rotationDeg: number;
+    maxRotationDeg: number;
+  } = {
+    x: 45,
+    y: 265,
+    rotationDeg: 0,
+    maxRotationDeg: 30,
+  };
 }
 
 export const enqueueAction = (
@@ -231,6 +271,14 @@ export const enqueueAction = (
   ms: number
 ) => {
   state.actions.push(new AutomatedAction(action, ms));
+};
+
+export const addParallelAction = (
+  state: State,
+  action: StateAction | undefined,
+  ms: number
+) => {
+  state.parallelActions.push(new AutomatedAction(action, ms));
 };
 
 export const updateStateActions = (state: State, dt: number) => {
@@ -277,6 +325,18 @@ export const updateStateActions = (state: State, dt: number) => {
     runningAutomations = false;
     if (logAutomationUpdates) {
       console.log();
+    }
+  }
+
+  for (let i = 0; i < state.parallelActions.length; i++) {
+    const automatedAction = state.parallelActions[i];
+    automatedAction.update(dt);
+    if (automatedAction.isComplete()) {
+      if (automatedAction.action) {
+        automatedAction.action.execute(state);
+      }
+      state.parallelActions.splice(i, 1);
+      i--;
     }
   }
 };
