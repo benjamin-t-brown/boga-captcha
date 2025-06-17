@@ -13,8 +13,8 @@ import {
   AnimatedParticle,
   addParallelAction,
 } from './State';
-import { timerStart } from './Timer';
 import { TinyPhysics } from './TinyPhysics';
+import { getScoreTarget } from './Params';
 
 export class StateAction {
   state: State | undefined;
@@ -267,9 +267,9 @@ export class DoGetBallInFlower extends StateAction {
     if (ball) {
       ball.remove(this.tinyPhysics);
       state.pachinkoBalls = state.pachinkoBalls.filter(b => b !== ball);
-      state.score += 1000;
+      state.score += 1500;
       if (state.flowerRoofs.indexOf(flowerSensor.flowerRoof) === 0) {
-        state.score += 4000;
+        state.score += 9500;
       }
 
       enqueueAction(
@@ -339,7 +339,7 @@ export class DoGameComplete extends StateAction {
   act() {
     const state = this.getState();
     const globalWindow = window as any;
-    if (Math.floor(state.score) > 10000) {
+    if (Math.floor(state.score) > getScoreTarget()) {
       globalWindow.showSuccessMessage(Math.floor(state.score));
       state.showConfetti = true;
     } else {
