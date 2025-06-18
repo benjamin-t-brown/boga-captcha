@@ -2,6 +2,7 @@ import { StateAction } from './Actions';
 import { Arm, Point, Slope, TinyPhysics } from './TinyPhysics';
 import { createTimer, Timer, timerIsComplete, timerUpdate } from './Timer';
 import { createAnimation, Animation } from './Animation';
+import { getNumReserveBalls } from './Params';
 
 export class Removable {
   removeFlag: boolean;
@@ -241,7 +242,7 @@ export class State {
   spinners: Spinner[] = [];
   animatedParticles: AnimatedParticle[] = [];
   reserveBalls: PachinkoBall[] = [];
-  numReserveBalls: number = 20;
+  numReserveBalls: number = getNumReserveBalls();
   score: number = 0;
   showConfetti: boolean = false;
 

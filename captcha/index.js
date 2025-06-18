@@ -215,9 +215,9 @@ class DoGetBallInFlower extends StateAction {
     if (ball) {
       ball.remove(this.tinyPhysics);
       state.pachinkoBalls = state.pachinkoBalls.filter(b => b !== ball);
-      state.score += 1000;
+      state.score += 1500;
       if (state.flowerRoofs.indexOf(flowerSensor.flowerRoof) === 0) {
-        state.score += 4000;
+        state.score += 9500;
       }
       enqueueAction(
         state,
@@ -278,7 +278,7 @@ class DoGameComplete extends StateAction {
   act() {
     const state = this.getState();
     const globalWindow = window;
-    if (Math.floor(state.score) > 10000) {
+    if (Math.floor(state.score) > getScoreTarget()) {
       globalWindow.showSuccessMessage(Math.floor(state.score));
       state.showConfetti = true;
     } else {
@@ -568,25 +568,77 @@ const loadImagesAndSprites = async r => {
   shootArrowSprites.forEach((sprite, index) => {
     r.sprites[`shootArrow_${index}`] = sprite;
   });
+  const iconLoadingAnimSprites = await loadImageAsSprites(
+    'res/icon_loading_anim.png',
+    36,
+    36
+  );
+  iconLoadingAnimSprites.forEach((sprite, index) => {
+    r.sprites[`iconLoadingAnim_${index}`] = sprite;
+  });
+  const iconFail5AnimSprites = await loadImageAsSprites(
+    'res/icon_fail5_anim.png',
+    36,
+    36
+  );
+  iconFail5AnimSprites.forEach((sprite, index) => {
+    r.sprites[`iconFail5Anim_${index}`] = sprite;
+  });
 };
 const loadAnimations = async () => {
+  createAnimationBuilder('icon_start0', () => {
+    const anim = new Animation(true);
+    anim.name = 'icon_start0';
+    anim.addSprite({ name: 'icon_start0', duration: 1000 });
+    return anim;
+  });
+  for (let i = 0; i < PushIconStack.NUM_ICONS; i++) {
+    createAnimationBuilder(`icon_fail${i}`, () => {
+      const anim = new Animation(true);
+      anim.name = `icon_fail${i}`;
+      anim.addSprite({ name: `icon_fail${i}`, duration: 1000 });
+      return anim;
+    });
+    createAnimationBuilder(`icon_good${i}`, () => {
+      const anim = new Animation(true);
+      anim.name = `icon_good${i}`;
+      anim.addSprite({ name: `icon_good${i}`, duration: 1000 });
+      return anim;
+    });
+  }
+  createAnimationBuilder('icon_loading', () => {
+    const anim = new Animation(true);
+    anim.name = 'icon_loading';
+    for (let i = 0; i < 4; i++) {
+      anim.addSprite({ name: `iconLoadingAnim_${i}`, duration: 300 });
+    }
+    return anim;
+  });
+  createAnimationBuilder('icon_fail5', () => {
+    const anim = new Animation(true);
+    anim.name = 'icon_fail5';
+    for (let i = 0; i < 2; i++) {
+      anim.addSprite({ name: `iconFail5Anim_${i}`, duration: 300 });
+    }
+    return anim;
+  });
   createAnimationBuilder('shootArrow', () => {
     const anim = new Animation(true);
-    anim.loop = true;
+    anim.name = 'shootArrow';
     anim.addSprite({ name: 'shootArrow_0', duration: 700 });
     anim.addSprite({ name: 'shootArrow_1', duration: 700 });
     return anim;
   });
   createAnimationBuilder('shootArrow2', () => {
     const anim = new Animation(true);
-    anim.loop = true;
+    anim.name = 'shootArrow2';
     anim.addSprite({ name: 'shootArrow_1', duration: 700 });
     anim.addSprite({ name: 'shootArrow_0', duration: 700 });
     return anim;
   });
   createAnimationBuilder('flowerRoofOpen', () => {
-    const anim = new Animation(true);
-    anim.loop = false;
+    const anim = new Animation(false);
+    anim.name = 'flowerRoofOpen';
     anim.addSprite({ name: 'flowerRoof_0', duration: 100 });
     anim.addSprite({ name: 'flowerRoof_1', duration: 100 });
     anim.addSprite({ name: 'flowerRoof_2', duration: 100 });
@@ -594,8 +646,8 @@ const loadAnimations = async () => {
     return anim;
   });
   createAnimationBuilder('flowerRoofClose', () => {
-    const anim = new Animation(true);
-    anim.loop = false;
+    const anim = new Animation(false);
+    anim.name = 'flowerRoofClose';
     anim.addSprite({ name: 'flowerRoof_5', duration: 100 });
     anim.addSprite({ name: 'flowerRoof_6', duration: 100 });
     anim.addSprite({ name: 'flowerRoof_7', duration: 100 });
@@ -604,7 +656,7 @@ const loadAnimations = async () => {
   });
   createAnimationBuilder('flashingArrow0', () => {
     const anim = new Animation(true);
-    anim.loop = true;
+    anim.name = 'flashingArrow0';
     anim.addSprite({ name: 'flashingArrow_0', duration: 100 });
     anim.addSprite({ name: 'flashingArrow_1', duration: 100 });
     anim.addSprite({ name: 'flashingArrow_2', duration: 100 });
@@ -613,7 +665,7 @@ const loadAnimations = async () => {
   });
   createAnimationBuilder('flashingArrow1', () => {
     const anim = new Animation(true);
-    anim.loop = true;
+    anim.name = 'flashingArrow1';
     anim.addSprite({ name: 'flashingArrow_1', duration: 100 });
     anim.addSprite({ name: 'flashingArrow_2', duration: 100 });
     anim.addSprite({ name: 'flashingArrow_3', duration: 100 });
@@ -622,7 +674,7 @@ const loadAnimations = async () => {
   });
   createAnimationBuilder('flashingArrow2', () => {
     const anim = new Animation(true);
-    anim.loop = true;
+    anim.name = 'flashingArrow2';
     anim.addSprite({ name: 'flashingArrow_2', duration: 100 });
     anim.addSprite({ name: 'flashingArrow_3', duration: 100 });
     anim.addSprite({ name: 'flashingArrow_0', duration: 100 });
@@ -631,7 +683,6 @@ const loadAnimations = async () => {
   });
   createAnimationBuilder('flashingArrow3', () => {
     const anim = new Animation(true);
-    anim.loop = true;
     anim.addSprite({ name: 'flashingArrow_3', duration: 100 });
     anim.addSprite({ name: 'flashingArrow_0', duration: 100 });
     anim.addSprite({ name: 'flashingArrow_1', duration: 100 });
@@ -789,6 +840,7 @@ class GameManager {
     this.state.uiShootArrow0.start();
     this.state.uiShootArrow1 = createAnimation('shootArrow2');
     this.state.uiShootArrow1.start();
+    this.state.iconAnim = createAnimation('icon_start0');
     this.loop();
   }
   loop() {
@@ -949,19 +1001,25 @@ class GameManager {
       const icon = this.state.iconStack.shift();
       if (icon) {
         timerStart(this.state.iconTimer);
-        this.state.icon = icon;
+        this.state.iconAnim = createAnimation(icon);
+        this.state.iconAnim.start();
       } else {
-        this.state.icon = 'icon_start0';
+        this.state.iconAnim = createAnimation('icon_start0');
+        this.state.iconAnim.start();
       }
     }
     if (this.isGameComplete) {
-      this.state.icon = 'icon_loading';
+      if (this.state.iconAnim?.name !== 'icon_loading') {
+        this.state.iconAnim = createAnimation('icon_loading');
+        this.state.iconAnim.start();
+      }
     }
-    if (this.state.icon) {
-      this.r.drawSprite(
-        this.r.sprites[this.state.icon],
+    if (this.state.iconAnim) {
+      this.r.drawAnimation(
+        this.state.iconAnim,
         this.renderWidth - 36 - 7,
-        6
+        6,
+        0
       );
     }
     this.r.drawSprite(this.r.sprites.machine0Fg, 0, 0);
@@ -1053,7 +1111,8 @@ const handleShootClick = game => {
     return;
   }
   const buckets = [
-    [15800, 16200],
+    [14000, 15500],
+    [14500, 15500],
     [16500, 17500],
     [16700, 18500],
     [17500, 19000],
@@ -1409,6 +1468,12 @@ const Machine0 = {
       [332, 115],
     ],
   ],
+};
+const getScoreTarget = () => {
+  const params = window.location.search.split('?')[1];
+  const paramsObj = new URLSearchParams(params);
+  const scoreTarget = paramsObj.get('scoreTarget') ?? '15000';
+  return parseInt(scoreTarget);
 };
 const loadImageAsSprite = async path => {
   const image = new Image();
@@ -1822,7 +1887,7 @@ class State {
   shootPressed = false;
   iconStack = [];
   iconTimer = createTimer(2000);
-  icon = 'icon_start0';
+  iconAnim;
   handle = {
     x: 45,
     y: 265,

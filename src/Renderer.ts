@@ -86,7 +86,7 @@ export class Renderer {
     }
     this.context = context;
 
-    // Add mouse move listener
+    // debug mouse coordinates
     this.canvas.addEventListener('mousemove', e => {
       const rect = this.canvas.getBoundingClientRect();
       this.mouseX = ((e.clientX - rect.left) / rect.width) * this.canvas.width;

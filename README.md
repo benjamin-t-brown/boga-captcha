@@ -1,3 +1,35 @@
+# README
+
+This is an entry for the Kitboga Code Jam 2025.  It comprises of a captcha where the user must generate a "humanity score" by playing pachinko.  If the score is high enough, then the captcha succeeds.
+
+The site is live at: https://benjamin-t-brown.github.io/pachinko-captcha/
+
+This repo is coded in typescript, and the output is placed in the captcha directory as a single "index.js" file.  It can be built using nodejs and npm with the command:
+
+```
+npm install && npm run build
+```
+
+Search Params can be used to control the score threshold and the number of balls per try.
+
+The defaults are:
+
+Score Target: 15000
+Reserve Balls: 20
+
+```
+<url>?score-target=15000&num-reserve-balls=20
+```
+
+The assets in this repo consist of
+  - Drawings by the author @benjamin-t-brown
+  - Twitch.tv emotes
+  - Common meme pictures
+  - Emoji pictures
+  - Adobe Stock Images
+
+# The original README for this entry is below
+
 # Kitboga Code Jam
 "I'm not a robot!"
 
