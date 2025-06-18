@@ -251,7 +251,7 @@ export class State {
   shootPressed: boolean = false;
   iconStack: string[] = [];
   iconTimer: Timer = createTimer(2000);
-  icon: string = 'icon_start0';
+  iconAnim: Animation | undefined;
 
   handle: {
     x: number;

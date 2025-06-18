@@ -1,30 +1,21 @@
-import { TinyPhysics, Point, Arm, Slope } from './TinyPhysics';
+import { TinyPhysics } from './TinyPhysics';
 import {
-  Edge,
-  Pin,
   PachinkoBall,
   State,
   updateStateActions,
-  ArmSegment,
   FlowerSensor,
   enqueueAction,
 } from './State';
 import {
-  DoActivateFlowerRoof,
-  DoDeactivateFlowerRoof,
   DoGameComplete,
   DoGetBallInFlower,
   DoSpawnInitialReserveBalls,
   PushIconStack,
 } from './Actions';
-import { createCanvas, Renderer, loadImageAsSprite } from './Renderer';
+import { createCanvas, Renderer } from './Renderer';
 import { Machine0 } from './Machines';
 import {
   createMachineIntoState,
-  getPrimaryFlashingArrows,
-  getPrimaryFlowerRoof,
-  getSecondaryFlashingArrowsForInd,
-  getSecondaryFlowerRoofs,
   loadAnimations,
   loadImagesAndSprites,
 } from './Db';
@@ -46,7 +37,6 @@ export class GameManager {
 
   constructor() {
     const canvas = createCanvas(this.renderWidth, this.renderHeight);
-    // document.body.appendChild(canvas);
     const div = document.getElementById('game-canvas');
     if (div) {
       div.appendChild(canvas);
@@ -93,6 +83,8 @@ export class GameManager {
     this.state.uiShootArrow0.start();
     this.state.uiShootArrow1 = createAnimation('shootArrow2');
     this.state.uiShootArrow1.start();
+
+    this.state.iconAnim = createAnimation('icon_start0');
 
     this.loop();
   }
@@ -279,20 +271,26 @@ export class GameManager {
       const icon = this.state.iconStack.shift();
       if (icon) {
         timerStart(this.state.iconTimer);
-        this.state.icon = icon;
+        this.state.iconAnim = createAnimation(icon);
+        this.state.iconAnim.start();
       } else {
-        this.state.icon = 'icon_start0';
+        this.state.iconAnim = createAnimation('icon_start0');
+        this.state.iconAnim.start();
       }
     }
     if (this.isGameComplete) {
-      this.state.icon = 'icon_loading';
+      if (this.state.iconAnim?.name !== 'icon_loading') {
+        this.state.iconAnim = createAnimation('icon_loading');
+        this.state.iconAnim.start();
+      }
     }
 
-    if (this.state.icon) {
-      this.r.drawSprite(
-        this.r.sprites[this.state.icon],
+    if (this.state.iconAnim) {
+      this.r.drawAnimation(
+        this.state.iconAnim,
         this.renderWidth - 36 - 7,
-        6
+        6,
+        0
       );
     }
 

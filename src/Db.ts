@@ -100,26 +100,85 @@ export const loadImagesAndSprites = async (r: Renderer) => {
   shootArrowSprites.forEach((sprite, index) => {
     r.sprites[`shootArrow_${index}`] = sprite;
   });
+
+  const iconLoadingAnimSprites = await loadImageAsSprites(
+    'res/icon_loading_anim.png',
+    36,
+    36
+  );
+  iconLoadingAnimSprites.forEach((sprite, index) => {
+    r.sprites[`iconLoadingAnim_${index}`] = sprite;
+  });
+
+  const iconFail5AnimSprites = await loadImageAsSprites(
+    'res/icon_fail5_anim.png',
+    36,
+    36
+  );
+  iconFail5AnimSprites.forEach((sprite, index) => {
+    r.sprites[`iconFail5Anim_${index}`] = sprite;
+  });
 };
 
 export const loadAnimations = async () => {
+  createAnimationBuilder('icon_start0', () => {
+    const anim = new Animation(true);
+    anim.name = 'icon_start0';
+    anim.addSprite({ name: 'icon_start0', duration: 1000 });
+    return anim;
+  });
+
+  for (let i = 0; i < PushIconStack.NUM_ICONS; i++) {
+    createAnimationBuilder(`icon_fail${i}`, () => {
+      const anim = new Animation(true);
+      anim.name = `icon_fail${i}`;
+      anim.addSprite({ name: `icon_fail${i}`, duration: 1000 });
+      return anim;
+    });
+
+    createAnimationBuilder(`icon_good${i}`, () => {
+      const anim = new Animation(true);
+      anim.name = `icon_good${i}`;
+      anim.addSprite({ name: `icon_good${i}`, duration: 1000 });
+      return anim;
+    });
+  }
+
+  createAnimationBuilder('icon_loading', () => {
+    const anim = new Animation(true);
+    anim.name = 'icon_loading';
+    for (let i = 0; i < 4; i++) {
+      anim.addSprite({ name: `iconLoadingAnim_${i}`, duration: 300 });
+    }
+    return anim;
+  });
+
+  createAnimationBuilder('icon_fail5', () => {
+    const anim = new Animation(true);
+    anim.name = 'icon_fail5';
+    for (let i = 0; i < 2; i++) {
+      anim.addSprite({ name: `iconFail5Anim_${i}`, duration: 300 });
+    }
+    return anim;
+  });
+
   createAnimationBuilder('shootArrow', () => {
     const anim = new Animation(true);
-    anim.loop = true;
+    anim.name = 'shootArrow';
     anim.addSprite({ name: 'shootArrow_0', duration: 700 });
     anim.addSprite({ name: 'shootArrow_1', duration: 700 });
     return anim;
   });
   createAnimationBuilder('shootArrow2', () => {
     const anim = new Animation(true);
-    anim.loop = true;
+    anim.name = 'shootArrow2';
     anim.addSprite({ name: 'shootArrow_1', duration: 700 });
     anim.addSprite({ name: 'shootArrow_0', duration: 700 });
     return anim;
   });
   createAnimationBuilder('flowerRoofOpen', () => {
-    const anim = new Animation(true);
-    anim.loop = false;
+    const anim = new Animation(false);
+    anim.name = 'flowerRoofOpen';
     anim.addSprite({ name: 'flowerRoof_0', duration: 100 });
     anim.addSprite({ name: 'flowerRoof_1', duration: 100 });
     anim.addSprite({ name: 'flowerRoof_2', duration: 100 });
@@ -127,8 +186,8 @@ export const loadAnimations = async () => {
     return anim;
   });
   createAnimationBuilder('flowerRoofClose', () => {
-    const anim = new Animation(true);
-    anim.loop = false;
+    const anim = new Animation(false);
+    anim.name = 'flowerRoofClose';
     anim.addSprite({ name: 'flowerRoof_5', duration: 100 });
     anim.addSprite({ name: 'flowerRoof_6', duration: 100 });
     anim.addSprite({ name: 'flowerRoof_7', duration: 100 });
@@ -138,7 +197,7 @@ export const loadAnimations = async () => {
 
   createAnimationBuilder('flashingArrow0', () => {
     const anim = new Animation(true);
-    anim.loop = true;
+    anim.name = 'flashingArrow0';
     anim.addSprite({ name: 'flashingArrow_0', duration: 100 });
     anim.addSprite({ name: 'flashingArrow_1', duration: 100 });
     anim.addSprite({ name: 'flashingArrow_2', duration: 100 });
@@ -148,7 +207,7 @@ export const loadAnimations = async () => {
 
   createAnimationBuilder('flashingArrow1', () => {
     const anim = new Animation(true);
-    anim.loop = true;
+    anim.name = 'flashingArrow1';
     anim.addSprite({ name: 'flashingArrow_1', duration: 100 });
     anim.addSprite({ name: 'flashingArrow_2', duration: 100 });
     anim.addSprite({ name: 'flashingArrow_3', duration: 100 });
@@ -158,7 +217,7 @@ export const loadAnimations = async () => {
 
   createAnimationBuilder('flashingArrow2', () => {
     const anim = new Animation(true);
-    anim.loop = true;
+    anim.name = 'flashingArrow2';
     anim.addSprite({ name: 'flashingArrow_2', duration: 100 });
     anim.addSprite({ name: 'flashingArrow_3', duration: 100 });
     anim.addSprite({ name: 'flashingArrow_0', duration: 100 });
@@ -168,7 +227,6 @@ export const loadAnimations = async () => {
 
   createAnimationBuilder('flashingArrow3', () => {
     const anim = new Animation(true);
-    anim.loop = true;
     anim.addSprite({ name: 'flashingArrow_3', duration: 100 });
     anim.addSprite({ name: 'flashingArrow_0', duration: 100 });
     anim.addSprite({ name: 'flashingArrow_1', duration: 100 });
