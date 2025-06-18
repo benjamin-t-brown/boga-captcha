@@ -4,6 +4,8 @@ This is an entry for the Kitboga Code Jam 2025.  It comprises of a captcha where
 
 The site is live at: https://benjamin-t-brown.github.io/pachinko-captcha/
 
+![image](https://github.com/user-attachments/assets/0b24cf41-d083-4c3f-9ecd-60936bc0d625)
+
 This repo is coded in typescript, and the output is placed in the captcha directory as a single "index.js" file.  It can be built using nodejs and npm with the command:
 
 ```
