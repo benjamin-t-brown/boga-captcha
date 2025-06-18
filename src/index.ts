@@ -16,7 +16,13 @@ function normalize(
   return c + ((x - a) * (d - c)) / (b - a);
 }
 
+let preventShoot = false;
+
 const handleShootClick = (game: GameManager) => {
+  if (preventShoot) {
+    return;
+  }
+
   game.state.shootPressed = false;
   if (game.isGameComplete || game.state.numReserveBalls <= 0) {
     return;
@@ -55,11 +61,16 @@ const handleShootClick = (game: GameManager) => {
     0
   );
   enqueueAction(game.state, new DespawnBottomReserveBall(game.tinyPhysics), 0);
+
+  preventShoot = true;
+  setTimeout(() => {
+    preventShoot = false;
+  }, 50);
 };
 
 window.addEventListener('load', () => {
   const game = new GameManager();
-  console.log('game', game);
+  console.log('game1', game);
   game
     .load()
     .then(() => {
@@ -69,6 +80,12 @@ window.addEventListener('load', () => {
     .catch(e => {
       console.error('Error starting game', e);
     });
+
+  // thanks for obtuse bs, ios!!!!!!!
+  // https://stackoverflow.com/questions/41869122/touch-events-within-iframe-are-not-working-on-ios
+  document.addEventListener('touchstart', () => {});
+  document.addEventListener('touchend', () => {});
+
   window.addEventListener('touchstart', e => {
     const rect = game.r.canvas.getBoundingClientRect();
     const touch = e.touches[0];
@@ -94,6 +111,7 @@ window.addEventListener('load', () => {
       handleShootClick(game);
       ev.preventDefault();
     }
+    game.state.shootPressed = false;
   });
 
   window.addEventListener('mousedown', e => {
@@ -133,7 +151,6 @@ window.addEventListener('load', () => {
   });
 
   window.addEventListener('keyup', ev => {
-    console.log('keyup', ev.key);
     if (ev.key === ' ') {
       handleShootClick(game);
     }
